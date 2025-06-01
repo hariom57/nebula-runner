@@ -2,32 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Nebula Runner Ultimate</title>
+  <title>Nebula Runner Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.8.3/dist/es-module-shims.min.js"></script>
   <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/"
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/"
+      }
     }
-  }
   </script>
 </head>
 <body>
-  <div id="loading">LOADING...<div class="spinner"></div></div>
-  <div id="scoring"> 
-    <div id="score">SCORE: <span>0</span></div>
-    <div id="coins">COINS: <span>0</span></div>
+  <div id="homeScreen" class="screen">
+    <h1>Nebula Runner</h1>
+    <button id="playBtn">Play</button>
+    <button id="levelSelectBtn">Level Select</button>
   </div>
-  <div id="gameOver">
-    <h1>MISSION FAILED</h1>
-    <p>Final Score: <span id="finalScore">0</span></p>
-    <button onclick="window.location.reload()">RETRY</button>
+
+  <div id="levelSelectScreen" class="screen">
+    <h2>Select Level</h2>
+    <div id="levelGrid"></div>
+    <button id="backHomeBtn">Back</button>
   </div>
+
+  <div id="gameUI">
+    <!-- Original Score Display -->
+    <div id="scoring">
+      <div id="score">SCORE: <span>0</span></div>
+      <div id="coins">COINS: <span>0</span></div>
+    </div>
+
+    <!-- Sci-Fi HUD Overlay -->
+    <div id="hudOverlay">
+      <!-- Top Left - Player Info -->
+      <div class="hud-panel top-left">
+        <div class="panel-header">PILOT STATUS</div>
+        <div class="pilot-info">
+          <div class="pilot-name">CDR. ALEX NOVA</div>
+          <div class="pilot-id">ID-7842X</div>
+          <div class="pilot-rank">COMMANDER</div>
+        </div>
+        <div class="status-bars">
+          <div class="status-item">
+            <span>HULL</span>
+            <div class="bar"><div class="fill hull-fill"></div></div>
+            <span class="value">98%</span>
+          </div>
+          <div class="status-item">
+            <span>FUEL</span>
+            <div class="bar"><div class="fill fuel-fill"></div></div>
+            <span class="value">74%</span>
+          </div>
+          <div class="status-item">
+            <span>SYS</span>
+            <div class="bar"><div class="fill sys-fill"></div></div>
+            <span class="value">100%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Right - Mission Data -->
+      <div class="hud-panel top-right">
+        <div class="panel-header">MISSION DATA</div>
+        <div class="mission-info">
+          <div class="mission-item">
+            <span class="label">SECTOR:</span>
+            <span class="value">NEBULA-7</span>
+          </div>
+          <div class="mission-item">
+            <span class="label">THREAT:</span>
+            <span class="value threat-high">HIGH</span>
+          </div>
+          <div class="mission-item">
+            <span class="label">TIME:</span>
+            <span class="value" id="missionTime">00:00</span>
+          </div>
+        </div>
+        <div class="radar-container">
+          <canvas id="radarCanvas" width="120" height="120"></canvas>
+        </div>
+      </div>
+
+      <!-- Bottom Left - Navigation Graph -->
+      <div class="hud-panel bottom-left">
+        <div class="panel-header">NAV TRAJECTORY</div>
+        <canvas id="navGraph" width="300" height="120"></canvas>
+        <div class="nav-data">
+          <span>DEVIATION: <span id="currentDeviation">0.0</span></span>
+          <span>STABILITY: <span id="stability">OPTIMAL</span></span>
+        </div>
+      </div>
+
+      <!-- Bottom Right - System Readouts -->
+      <div class="hud-panel bottom-right">
+        <div class="panel-header">SHIP SYSTEMS</div>
+        <div class="system-grid">
+          <div class="sys-item">
+            <span class="sys-label">ENGINE</span>
+            <span class="sys-value" id="enginePower">4.2kW</span>
+          </div>
+          <div class="sys-item">
+            <span class="sys-label">SHIELDS</span>
+            <span class="sys-value" id="shieldPower">100%</span>
+          </div>
+          <div class="sys-item">
+            <span class="sys-label">VELOCITY</span>
+            <span class="sys-value" id="velocity">847 m/s</span>
+          </div>
+          <div class="sys-item">
+            <span class="sys-label">ALTITUDE</span>
+            <span class="sys-value" id="altitude">2.4km</span>
+          </div>
+        </div>
+        <div class="warning-panel">
+          <div class="warning-item">⚠ ASTEROID FIELD DETECTED</div>
+          <div class="warning-item">● NAVIGATION OPTIMAL</div>
+        </div>
+      </div>
+
+      <!-- Center HUD Elements -->
+      <div class="center-hud">
+        <div class="crosshair"></div>
+        <div class="speed-indicator">
+          <span>SPEED</span>
+          <div class="speed-value" id="speedValue">847</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameOver">
+      <h1>MISSION FAILED</h1>
+      <p>Final Score: <span id="finalScore">0</span></p>
+      <button onclick="window.location.reload()">RETRY</button>
+    </div>
+  </div>
+
   <canvas id="gameCanvas"></canvas>
-  <script type="module" src="main.js"></script>
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>

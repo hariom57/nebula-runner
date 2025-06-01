@@ -2,34 +2,42 @@ body {
   margin: 0;
   overflow: hidden;
   background: #000;
-  font-family: 'Orbitron', 'Exo', system-ui;
+  font-family: 'Orbitron', sans-serif;
 }
 
-#loading {
+#gameCanvas {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #00ffd0;
-  font-size: 2em;
-  text-shadow: 0 0 15px rgba(0, 255, 208, 0.7);
-  z-index: 300;
+  top: 0;
+  left: 0;
+  outline: none;
+}
+
+.screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
+  background: rgba(10, 20, 30, 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  color: #00ffd0;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  border-top-color: #00ffd0;
-  animation: spin 1s linear infinite;
+.screen h1, .screen h2 {
+  font-size: 3em;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px rgba(0, 255, 208, 0.5);
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+#levelSelectScreen {
+  display: none;
+}
+
+#gameUI {
+  display: none;
 }
 
 #scoring {
@@ -41,26 +49,14 @@ body {
   font-weight: 700;
   text-shadow: 0 0 10px rgba(0, 255, 208, 0.5);
   z-index: 100;
-  background: rgba(10, 20, 30, 0.85);
-  border-radius: 16px;
+  background: rgba(16, 32, 48, 0.8);
   padding: 16px 24px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 24px rgba(0, 255, 208, 0.2),
-              inset 0 0 12px rgba(0, 255, 208, 0.15);
-}
-
-#score, #coins {
-  margin: 8px 0;
-  font-family: 'Exo', sans-serif;
-  letter-spacing: 1px;
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
 }
 
 #score span, #coins span {
   color: #fff;
-  font-weight: 900;
-  font-size: 1.1em;
-  text-shadow: 0 0 12px #00ffd0;
-  transition: all 0.15s ease;
 }
 
 .coin-pulse {
@@ -71,6 +67,244 @@ body {
   0% { transform: scale(1); }
   50% { transform: scale(1.2); }
   100% { transform: scale(1); }
+}
+
+/* HUD OVERLAY STYLES */
+#hudOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  font-family: 'Orbitron', monospace;
+}
+
+.hud-panel {
+  position: absolute;
+  background: rgba(0, 20, 40, 0.8);
+  border: 1px solid #00ffd0;
+  border-radius: 4px;
+  padding: 12px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 20px rgba(0, 255, 208, 0.3);
+}
+
+.panel-header {
+  color: #00ffd0;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #00ffd0;
+  padding-bottom: 4px;
+}
+
+/* Top Left Panel */
+.top-left {
+  top: 80px;
+  left: 20px;
+  width: 200px;
+}
+
+.pilot-info {
+  margin-bottom: 12px;
+}
+
+.pilot-name {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.pilot-id, .pilot-rank {
+  color: #00ffd0;
+  font-size: 10px;
+}
+
+.status-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  color: #00ffd0;
+}
+
+.bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(0, 255, 208, 0.2);
+  border: 1px solid #00ffd0;
+}
+
+.fill {
+  height: 100%;
+  background: #00ffd0;
+  transition: width 0.3s;
+}
+
+.hull-fill { width: 98%; }
+.fuel-fill { width: 74%; background: #ffaa00; }
+.sys-fill { width: 100%; }
+
+/* Top Right Panel */
+.top-right {
+  top: 20px;
+  right: 20px;
+  width: 180px;
+}
+
+.mission-info {
+  margin-bottom: 12px;
+}
+
+.mission-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.label {
+  color: #00ffd0;
+}
+
+.value {
+  color: #fff;
+}
+
+.threat-high {
+  color: #ff4444;
+  text-shadow: 0 0 5px #ff4444;
+}
+
+.radar-container {
+  display: flex;
+  justify-content: center;
+}
+
+#radarCanvas {
+  border: 1px solid #00ffd0;
+  border-radius: 50%;
+}
+
+/* Bottom Left Panel */
+.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  width: 320px;
+}
+
+#navGraph {
+  border: 1px solid #00ffd0;
+  background: rgba(0, 20, 40, 0.5);
+}
+
+.nav-data {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #00ffd0;
+  margin-top: 6px;
+}
+
+/* Bottom Right Panel */
+.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  width: 200px;
+}
+
+.system-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sys-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
+}
+
+.sys-label {
+  color: #00ffd0;
+}
+
+.sys-value {
+  color: #fff;
+  font-weight: bold;
+}
+
+.warning-panel {
+  border-top: 1px solid #00ffd0;
+  padding-top: 8px;
+}
+
+.warning-item {
+  font-size: 8px;
+  color: #ffaa00;
+  margin-bottom: 2px;
+}
+
+/* Center HUD */
+.center-hud {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.crosshair {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #00ffd0;
+  border-radius: 50%;
+  position: relative;
+  opacity: 0.7;
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: #00ffd0;
+}
+
+.crosshair::before {
+  width: 20px;
+  height: 2px;
+  top: 19px;
+  left: 10px;
+}
+
+.crosshair::after {
+  width: 2px;
+  height: 20px;
+  top: 10px;
+  left: 19px;
+}
+
+.speed-indicator {
+  position: absolute;
+  top: 60px;
+  left: -30px;
+  text-align: center;
+  font-size: 10px;
+  color: #00ffd0;
+}
+
+.speed-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
 }
 
 #gameOver {
@@ -85,15 +319,8 @@ body {
   color: #fff;
   backdrop-filter: blur(10px);
   border: 2px solid #00ffd0;
-  box-shadow: 0 0 40px rgba(0, 255, 208, 0.3);
   display: none;
   z-index: 200;
-  animation: gameOverEnter 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-@keyframes gameOverEnter {
-  from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 #gameOver h1 {
@@ -111,9 +338,8 @@ button {
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.3s;
+  margin: 10px;
 }
 
 button:hover {
@@ -121,23 +347,29 @@ button:hover {
   transform: scale(1.05);
 }
 
-button::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 256%;
-  background: linear-gradient(45deg, 
-    transparent 25%, 
-    /* rgba(255,255,255,0.15) 50%,  */
-    rgba(246, 254, 0, 0.777) 50%, 
-    transparent 75%
-  );
-  animation: buttonShine 3s infinite linear;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-@keyframes buttonShine {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+#levelGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.level-btn {
+  padding: 15px 30px;
+  background: rgba(0, 255, 208, 0.1);
+  border: 2px solid #00ffd0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #00ffd0;
+}
+
+.level-btn:hover {
+  background: rgba(0, 255, 208, 0.2);
+  color: #000;
 }
