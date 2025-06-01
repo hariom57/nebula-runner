@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nebula Runner Ultimate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo:wght@600&display=swap" rel="stylesheet">
+  <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.8.3/dist/es-module-shims.min.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="loading">LOADING...<div class="spinner"></div></div>
+  <div id="scoring"> 
+    <div id="score">SCORE: <span>0</span></div>
+    <div id="coins">COINS: <span>0</span></div>
+  </div>
+  <div id="gameOver">
+    <h1>MISSION FAILED</h1>
+    <p>Final Score: <span id="finalScore">0</span></p>
+    <button onclick="window.location.reload()">RETRY</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

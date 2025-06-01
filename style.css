@@ -1,0 +1,143 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Orbitron', 'Exo', system-ui;
+}
+
+#loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #00ffd0;
+  font-size: 2em;
+  text-shadow: 0 0 15px rgba(0, 255, 208, 0.7);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #00ffd0;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#scoring {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  color: #00ffd0;
+  font-size: 24px;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 255, 208, 0.5);
+  z-index: 100;
+  background: rgba(10, 20, 30, 0.85);
+  border-radius: 16px;
+  padding: 16px 24px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 24px rgba(0, 255, 208, 0.2),
+              inset 0 0 12px rgba(0, 255, 208, 0.15);
+}
+
+#score, #coins {
+  margin: 8px 0;
+  font-family: 'Exo', sans-serif;
+  letter-spacing: 1px;
+}
+
+#score span, #coins span {
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.1em;
+  text-shadow: 0 0 12px #00ffd0;
+  transition: all 0.15s ease;
+}
+
+.coin-pulse {
+  animation: coinPulse 0.3s ease-out;
+}
+
+@keyframes coinPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+#gameOver {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  text-align: center;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 2px solid #00ffd0;
+  box-shadow: 0 0 40px rgba(0, 255, 208, 0.3);
+  display: none;
+  z-index: 200;
+  animation: gameOverEnter 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes gameOverEnter {
+  from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+#gameOver h1 {
+  color: #ff3860;
+  margin: 0 0 1rem;
+  font-size: 2.5em;
+}
+
+button {
+  background: #00ffd0;
+  color: #000;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  background: #00ccaa;
+  transform: scale(1.05);
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 256%;
+  background: linear-gradient(45deg, 
+    transparent 25%, 
+    /* rgba(255,255,255,0.15) 50%,  */
+    rgba(246, 254, 0, 0.777) 50%, 
+    transparent 75%
+  );
+  animation: buttonShine 3s infinite linear;
+}
+
+@keyframes buttonShine {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
