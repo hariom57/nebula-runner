@@ -15,30 +15,126 @@
       }
     }
   </script>
+  
+
+
+<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="NebulaRunner" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+
 </head>
 <body>
+  
   <div id="homeScreen" class="screen">
     <h1>Nebula Runner</h1>
     <button id="playBtn">Play</button>
     <button id="levelSelectBtn">Level Select</button>
+    <button id="leaderboardBtn">LEADERBOARD</button>
   </div>
-
+  
   <div id="levelSelectScreen" class="screen">
-    <h2>Select Level</h2>
-    <div id="levelGrid"></div>
-    <button id="backHomeBtn">Back</button>
+    <h2>SELECT MISSION</h2>
+    
+    <div class="level-slider-container">
+      <button class="slider-nav prev-btn" id="prevLevelBtn">‹</button>
+      
+      <div class="level-slider">
+        <div class="level-card active" data-level="0">
+          <div class="card-image">
+            <img src="assets/CardLevel1.png" alt="Asteroid Belt">
+          </div>
+          <div class="card-content">
+            <h3>ASTEROID BELT</h3>
+            <div class="difficulty-stars">
+              <span class="star filled">★</span>
+              <span class="star">★</span>
+              <span class="star">★</span>
+            </div>
+            <p class="level-description">Navigate through scattered space debris</p>
+          </div>
+        </div>
+        
+        <div class="level-card" data-level="1">
+          <div class="card-image">
+            <img src="assets/CardLevel2.png" alt="Nebula Core">
+          </div>
+          <div class="card-content">
+            <h3>NEBULA CORE</h3>
+            <div class="difficulty-stars">
+              <span class="star filled">★</span>
+              <span class="star filled">★</span>
+              <span class="star">★</span>
+            </div>
+            <p class="level-description">Venture into the heart of cosmic storms</p>
+          </div>
+        </div>
+        
+        <div class="level-card" data-level="2">
+          <div class="card-image">
+            <img src="assets/CardLevel3.png" alt="Stellar Storm">
+          </div>
+          <div class="card-content">
+            <h3>STELLAR STORM</h3>
+            <div class="difficulty-stars">
+              <span class="star filled">★</span>
+              <span class="star filled">★</span>
+              <span class="star filled">★</span>
+            </div>
+            <p class="level-description">Survive the fury of dying stars</p>
+          </div>
+        </div>
+      </div>
+      
+      <button class="slider-nav next-btn" id="nextLevelBtn">›</button>
+    </div>
+    
+    <div class="slider-pagination">
+      <span class="pagination-dot active" data-slide="0"></span>
+      <span class="pagination-dot" data-slide="1"></span>
+      <span class="pagination-dot" data-slide="2"></span>
+    </div>
+    
+    <div class="level-actions">
+      <button id="selectLevelBtn" class="select-btn">SELECT MISSION</button>
+      <button id="backHomeBtn" class="back-btn">BACK</button>
+    </div>
   </div>
+  
+  <div id="authOverlay">
+  <div id="authBox">
+    <h2>Enter Callsign</h2>
+    <input type="text" id="usernameInput" placeholder="Commander Name">
+    <button onclick="saveUsername()">Begin Mission</button>
+  </div>
+</div>
 
+<div id="leaderboardOverlay">
+  <div class="leaderboard-panel">
+    <div class="leaderboard-header">PERSONAL BEST</div>
+    <ol id="personalLeaderboard" class="leaderboard-list"></ol>
+  </div>
+  <div class="leaderboard-panel">
+    <div class="leaderboard-header">GLOBAL LEADERS</div>
+    <ol id="globalLeaderboard" class="leaderboard-list"></ol>
+  </div>
+  <button id="closeLeaderboardBtn">BACK</button>
+</div>
+
+
+  
+  
   <div id="gameUI">
-    <!-- Original Score Display -->
+
     <div id="scoring">
       <div id="score">SCORE: <span>0</span></div>
       <div id="coins">COINS: <span>0</span></div>
     </div>
 
-    <!-- Sci-Fi HUD Overlay -->
     <div id="hudOverlay">
-      <!-- Top Left - Player Info -->
       <div class="hud-panel top-left">
         <div class="panel-header">PILOT STATUS</div>
         <div class="pilot-info">
@@ -65,7 +161,6 @@
         </div>
       </div>
 
-      <!-- Top Right - Mission Data -->
       <div class="hud-panel top-right">
         <div class="panel-header">MISSION DATA</div>
         <div class="mission-info">
@@ -87,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Bottom Left - Navigation Graph -->
       <div class="hud-panel bottom-left">
         <div class="panel-header">NAV TRAJECTORY</div>
         <canvas id="navGraph" width="300" height="120"></canvas>
@@ -97,7 +191,6 @@
         </div>
       </div>
 
-      <!-- Bottom Right - System Readouts -->
       <div class="hud-panel bottom-right">
         <div class="panel-header">SHIP SYSTEMS</div>
         <div class="system-grid">
@@ -124,7 +217,6 @@
         </div>
       </div>
 
-      <!-- Center HUD Elements -->
       <div class="center-hud">
         <div class="crosshair"></div>
         <div class="speed-indicator">
@@ -137,8 +229,12 @@
     <div id="gameOver">
       <h1>MISSION FAILED</h1>
       <p>Final Score: <span id="finalScore">0</span></p>
-      <button onclick="window.location.reload()">RETRY</button>
+      <div class="game-over-buttons">
+        <button id="retryBtn">RETRY MISSION</button>
+        <button id="backToMenuBtn">STRATEGIC RETREAT ⛺</button>
+      </div>
     </div>
+
   </div>
 
   <canvas id="gameCanvas"></canvas>

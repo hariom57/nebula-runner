@@ -7,9 +7,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
+import { isValidScore } from '../utils/security.js';
+import UISystem from '../systems/UISystem.js';
 
 export default class GameEngine {
   constructor(levelConfig) {
+     this.uiSystem = new UISystem();
     this.levelConfig = levelConfig;
     this.currentLane = 1;
     this.asteroids = [];
@@ -150,7 +153,7 @@ export default class GameEngine {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 2.2;
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
   }
 
   createScene() {
@@ -539,6 +542,7 @@ drawRadar() {
         this.scene.remove(asteroid);
         this.asteroids.splice(i, 1);
       } else if (this.player && this.checkSphereCollision(this.player, asteroid, 1.35)) {
+        this.gameOver = true; // Set immediately to block duplicate triggers
         this.createFireExplosion(this.player.position.clone());
         this.triggerFlash();
         this.handleCollision();
@@ -638,12 +642,28 @@ drawRadar() {
     document.getElementById('score').querySelector('span').textContent = this.score.toLocaleString();
   }
 
+
   endGame() {
     this.gameOver = true;
+    this.uiSystem.showGameOver(this.score);
+    
+    if (isValidScore(this.score)) { // Validate score first
+      this.uiSystem.updatePersonalBest(this.score);
+      this.uiSystem.updateGlobalLeaderboard(this.score);
+    } else {
+      console.error('Invalid score detected:', this.score);
+    }
+
+    if (this.score > 0) {
+      this.uiSystem.updatePersonalBest(this.score);
+    }
+    
     this.bloomPass.strength = 1.1;
     document.getElementById('gameOver').style.display = 'block';
     document.getElementById('finalScore').textContent = this.score.toLocaleString();
   }
+// }
+
 
   setupEventListeners() {
     window.addEventListener('keydown', e => {
@@ -655,7 +675,7 @@ drawRadar() {
         this.currentLane = Math.min(2, this.currentLane + 1);
       }
     });
-
+    
     window.addEventListener('resize', () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();

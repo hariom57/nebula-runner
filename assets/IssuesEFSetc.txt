@@ -4,3 +4,7 @@ Asteroid detection,
 
 firstly flipped upside down
 then mirrored x-y
+
+Leaderboard
+personal vs high score
+
