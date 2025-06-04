@@ -18,6 +18,10 @@ export function saveUsername() {
     currentUser = username;
     document.getElementById('authOverlay').style.display = 'none';
     document.dispatchEvent(new Event('userAuthenticated')); // New event
+    setTimeout(() => {
+      const pilotNameEl = document.getElementsByClassName('pilot-name')[0];
+      if (pilotNameEl) pilotNameEl.innerHTML = 'CDR. ' + currentUser;
+    }, 0);
   }
 }
 
