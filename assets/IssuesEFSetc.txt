@@ -8,3 +8,4 @@ then mirrored x-y
 Leaderboard
 personal vs high score
 
+GitHub issues
