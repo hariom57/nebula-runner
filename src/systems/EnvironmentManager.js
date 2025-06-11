@@ -16,7 +16,7 @@ export default class EnvironmentManager {
 
   setupAsteroidBelt(environment, config) {
     this.rgbeLoader.load(
-      'assets/hdri/asteroid-belt.hdr',
+      'assets/hdri/asteroid-belt.webp',
       (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
@@ -26,11 +26,6 @@ export default class EnvironmentManager {
         this.scene.background = envMap;
         this.scene.environment = envMap;
       },
-      undefined,
-      (error) => {
-        console.warn('HDRI loading failed, using solid color:', error);
-        this.scene.background = new THREE.Color(0x101020);
-      }
     );
 
     environment.lighting.ambient = new THREE.AmbientLight(0x404080, 0.15);
@@ -45,7 +40,7 @@ export default class EnvironmentManager {
 
   setupNebulaCore(environment, config) {
     this.rgbeLoader.load(
-      'assets/hdri/nebula-core.hdr',
+      'assets/hdri/nebula-core.webp',
       (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
@@ -55,11 +50,6 @@ export default class EnvironmentManager {
         this.scene.background = envMap;
         this.scene.environment = envMap;
       },
-      undefined,
-      (error) => {
-        console.warn('HDRI loading failed, using solid color:', error);
-        this.scene.background = new THREE.Color(0x601040);
-      }
     );
 
     environment.lighting.ambient = new THREE.AmbientLight(0xff6040, 0.25);
@@ -74,7 +64,7 @@ export default class EnvironmentManager {
 
   setupStellarStorm(environment, config) {
     this.rgbeLoader.load(
-      'assets/hdri/stellar-storm.hdr',
+      'assets/hdri/stellar-storm.webp',
       (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
@@ -84,11 +74,6 @@ export default class EnvironmentManager {
         this.scene.background = envMap;
         this.scene.environment = envMap;
       },
-      undefined,
-      (error) => {
-        console.warn('HDRI loading failed, using solid color:', error);
-        this.scene.background = new THREE.Color(0xff4000);
-      }
     );
 
     environment.lighting.ambient = new THREE.AmbientLight(0xffa040, 0.6);
