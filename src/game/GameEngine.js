@@ -15,6 +15,7 @@ export default class GameEngine {
   constructor(levelConfig) {
     this.uiSystem = new UISystem();
     this.levelConfig = levelConfig;
+    this.loadingManager = levelConfig.loadingManager || new THREE.LoadingManager(); // <-- ADD THIS LINE
     this.currentLane = 1;
     this.asteroids = [];
     this.coins = [];
@@ -29,48 +30,48 @@ export default class GameEngine {
     this.shake = 0;
     this.playerLight = null;
     this.bgStars = [];
-    this.fireTexture = new THREE.TextureLoader().load('assets/fire_particle.png');
+    this.fireTexture = new THREE.TextureLoader(this.loadingManager).load('assets/fire_particle.png'); // <-- PASS loadingManager
     this.flashMesh = null;
     this.flashAlpha = 0;
 
-    // Custom asteroids
     this.asteroidModels = [];
-    this.asteroidModelCount = 3; // asteroid1, asteroid3, asteroid4
-  
+    this.asteroidModelCount = 3;
+
     this.hudData = {
-        laneHistory: [],
-        missionStartTime: Date.now(),
-        currentLane: 1,
-        velocity: 847,
-        enginePower: 4.2,
-        shieldPower: 100,
-        altitude: 2.4
-        };
+      laneHistory: [],
+      missionStartTime: Date.now(),
+      currentLane: 1,
+      velocity: 847,
+      enginePower: 4.2,
+      shieldPower: 100,
+      altitude: 2.4
+    };
 
     this.hudUpdateTimer = 0;
-
-}
+  }
 
   async init() {
-    this.initEngine();        // Creates renderer
-    this.createScene();       // Creates scene
+    this.initEngine();
+    this.createScene();
     this.createStarfield();
     this.createPostProcessing();
-    
-    // NOW create EnvironmentManager after scene/renderer exist
-    this.environmentManager = new EnvironmentManager(this.scene, this.renderer);
+
+    // Pass loadingManager to EnvironmentManager
+    this.environmentManager = new EnvironmentManager(this.scene, this.renderer, this.loadingManager);
     this.environmentManager.switchEnvironment(this.levelConfig);
-    
+
     await this.loadAssets();
     this.setupEventListeners();
     this.gameLoop();
   }
 
-
   async loadAssets() {
+    // Use loadingManager for all loaders
+    const gltfLoader = new GLTFLoader(this.loadingManager);
+
     // Load player
     await new Promise(resolve => {
-      new GLTFLoader().load('assets/player.glb', glb => {
+      gltfLoader.load('assets/player.glb', glb => {
         this.player = glb.scene;
         this.player.scale.set(0.6, 0.6, 0.6);
         this.player.traverse(child => {
@@ -100,10 +101,9 @@ export default class GameEngine {
     });
 
     // Load asteroid models
-    const loader = new GLTFLoader();
     const asteroidFiles = ['asteroid1.glb', 'asteroid3.glb', 'asteroid4.glb'];
     const promises = asteroidFiles.map(file => new Promise(res => {
-      loader.load(
+      gltfLoader.load(
         `assets/${file}`,
         glb => {
           glb.scene.traverse(child => {
@@ -693,8 +693,12 @@ drawRadar() {
   }
 
   cleanup() {
+    THREE.Cache.clear();
     while(this.scene.children.length > 0) { 
       this.scene.remove(this.scene.children[0]); 
+    }
+    if (this.environmentManager) {
+      this.environmentManager.dispose();
     }
     this.renderer.dispose();
   }

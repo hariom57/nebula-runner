@@ -2,7 +2,9 @@
 
 // Input Sanitization
 export function sanitizeInput(input) {
-  return input.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+  if (typeof input !== 'string') return '';
+  return input.replace(/[<>'"&]/g, '').substring(0, 16);
+  // return input.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
 }
 
 //Advanced, and more rubust:
