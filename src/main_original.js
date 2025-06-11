@@ -160,18 +160,18 @@ class NebulaRunner {
     this.scene.add(directional);
 
     // Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(100, 100),
-      new THREE.MeshStandardMaterial({
-        color: 0x14202c,
-        roughness: 0.25,
-        metalness: 0.85,
-        envMapIntensity: 1.8
-      })
-    );
-    floor.rotation.x = -Math.PI/2;
-    floor.receiveShadow = true;
-    this.scene.add(floor);
+    // const floor = new THREE.Mesh(
+    //   new THREE.PlaneGeometry(100, 100),
+    //   new THREE.MeshStandardMaterial({
+    //     color: 0x14202c,
+    //     roughness: 0.25,
+    //     metalness: 0.85,
+    //     envMapIntensity: 1.8
+    //   })
+    // );
+    // floor.rotation.x = -Math.PI/2;
+    // floor.receiveShadow = true;
+    // this.scene.add(floor);
 
     // Fullscreen white flash mesh (for explosion effect)
     const flashGeo = new THREE.PlaneGeometry(2, 2);

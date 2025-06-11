@@ -9,10 +9,11 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
 import { isValidScore } from '../utils/security.js';
 import UISystem from '../systems/UISystem.js';
+import EnvironmentManager from '../systems/EnvironmentManager.js';
 
 export default class GameEngine {
   constructor(levelConfig) {
-     this.uiSystem = new UISystem();
+    this.uiSystem = new UISystem();
     this.levelConfig = levelConfig;
     this.currentLane = 1;
     this.asteroids = [];
@@ -51,14 +52,20 @@ export default class GameEngine {
 }
 
   async init() {
-    this.initEngine();
-    this.createScene();
+    this.initEngine();        // Creates renderer
+    this.createScene();       // Creates scene
     this.createStarfield();
     this.createPostProcessing();
+    
+    // NOW create EnvironmentManager after scene/renderer exist
+    this.environmentManager = new EnvironmentManager(this.scene, this.renderer);
+    this.environmentManager.switchEnvironment(this.levelConfig);
+    
     await this.loadAssets();
     this.setupEventListeners();
     this.gameLoop();
   }
+
 
   async loadAssets() {
     // Load player
@@ -166,18 +173,18 @@ export default class GameEngine {
     this.scene.add(directional);
 
     // Floor
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(100, 100),
-      new THREE.MeshStandardMaterial({
-        color: 0x14202c,
-        roughness: 0.25,
-        metalness: 0.85,
-        envMapIntensity: 1.8
-      })
-    );
-    floor.rotation.x = -Math.PI/2;
-    floor.receiveShadow = true;
-    this.scene.add(floor);
+    // const floor = new THREE.Mesh(
+    //   new THREE.PlaneGeometry(100, 100),
+    //   new THREE.MeshStandardMaterial({
+    //     color: 0x14202c,
+    //     roughness: 0.25,
+    //     metalness: 0.85,
+    //     envMapIntensity: 1.8
+    //   })
+    // );
+    // floor.rotation.x = -Math.PI/2;
+    // floor.receiveShadow = true;
+    // this.scene.add(floor);
 
     // Flash mesh
     const flashGeo = new THREE.PlaneGeometry(2, 2);

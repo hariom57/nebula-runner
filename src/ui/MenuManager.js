@@ -64,6 +64,10 @@ export default class MenuManager {
     this.updateSlider();
   }
 
+  getSelectedLevelIndex() {
+  return this.currentSlide; // Assuming currentSlide tracks selected card
+}
+
   updateSlider() {
     // Update cards
     document.querySelectorAll('.level-card').forEach((card, index) => {

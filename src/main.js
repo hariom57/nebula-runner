@@ -69,14 +69,15 @@ document.getElementById('closeLeaderboardBtn').addEventListener('click', () => {
 
 let currentLevelIndex = 0;
 
+// Update startGame call:
 function startGame(levelIndex) {
-    currentLevelIndex = levelIndex;
-  
-    menu.startGame();
-  
+  currentLevelIndex = levelIndex;
+  menu.startGame();
   if(currentGame) currentGame.cleanup();
-  
-  currentGame = new GameEngine(levels[levelIndex]);
+  currentGame = new GameEngine({
+    ...levels[levelIndex],
+    index: levelIndex // Add index to level config
+  });
   currentGame.init();
 }
 
