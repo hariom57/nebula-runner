@@ -7,7 +7,6 @@ export default class EnvironmentManager {
     this.renderer = renderer;
     this.currentEnvironment = null;
     this.environments = new Map();
-    // Use the provided loadingManager for all loaders (fix)
     this.rgbeLoader = new RGBELoader(loadingManager || new THREE.LoadingManager());
     this.cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager || new THREE.LoadingManager());
     this.textureLoader = new THREE.TextureLoader(loadingManager || new THREE.LoadingManager());
@@ -16,7 +15,7 @@ export default class EnvironmentManager {
 
   setupAsteroidBelt(environment, config) {
     this.rgbeLoader.load(
-      'assets/hdri/asteroid-belt.webp',
+      'assets/hdri/asteroid-belt.hdr',
       (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
@@ -40,7 +39,7 @@ export default class EnvironmentManager {
 
   setupNebulaCore(environment, config) {
     this.rgbeLoader.load(
-      'assets/hdri/nebula-core.webp',
+      'assets/hdri/nebula-core.hdr',
       (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
@@ -149,7 +148,6 @@ export default class EnvironmentManager {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors_array, 3));
     geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-    // FIX: vertexColors: true is needed for color attribute
     const material = new THREE.PointsMaterial({
       color: colors[0],
       size: 2.5,

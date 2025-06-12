@@ -6,11 +6,24 @@ body {
 }
 
 #gameCanvas {
-  z-index: 1;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: block;
+  z-index: 1;
   outline: none;
+  background: #000;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .screen {
@@ -82,7 +95,6 @@ button {
   transform: translateY(-2px);
 }
 
-/* Default button styles for backward compatibility */
 #playBtn, #levelSelectBtn, #leaderboardBtn {
   background: #00ffd0;
   color: #000;
@@ -878,31 +890,201 @@ button:disabled {
 }
 
 /* ============================================ */
-/* RESPONSIVE DESIGN                            */
+/* MOBILE RESPONSIVE DESIGN                    */
 /* ============================================ */
 
-@media (max-width: 768px) {
+@media only screen and (max-width: 768px) {
+  .screen h1, .screen h2 {
+    text-align: center !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: 2em !important;
+    margin-bottom: 1rem !important;
+  }
+
+
+  #levelSelectScreen h2 {
+    font-size: 1.8em !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .loading-container, #gameOver {
+    max-width: 90vw;
+    box-sizing: border-box;
+  }
+
+  .hud-panel {
+    font-size: 12px;
+    padding: 8px;
+    max-width: 90vw;
+    box-sizing: border-box;
+  }
+
+  .hud-panel.top-right {
+    top: 10px;
+    right: 10px;
+  }
+
+  .hud-panel.top-left {
+    top: 10px;
+    left: 10px;
+  }
+
+  .center-hud {
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  #scoring {
+    top: 10px;
+    left: 10px;
+    font-size: 20px !important;
+    padding: 12px !important;
+    max-width: 90vw;
+    box-sizing: border-box;
+  }
+
+  /* FIXED: Leaderboard layout with accessible back button */
+  #leaderboardOverlay {
+    padding: 10px 5px 80px 5px; /* Added bottom padding for button space */
+    box-sizing: border-box;
+    overflow-y: auto; /* Allow scrolling if needed */
+  }
+
+  .leaderboard-panel {
+    max-width: 85vw; /* Smaller panels */
+    margin: 10px auto; /* Reduced margins */
+    padding: 15px 20px; /* Reduced padding */
+    min-width: unset; /* Remove minimum width constraint */
+    display: block; /* Stack panels vertically */
+  }
+
+  .leaderboard-header {
+    font-size: 1.1em; /* Smaller header */
+    margin-bottom: 12px; /* Reduced margin */
+  }
+
+  .leaderboard-list li {
+    font-size: 0.95em; /* Smaller list items */
+    padding: 8px 12px; /* Reduced padding */
+    margin: 6px 0; /* Reduced margin */
+  }
+
+  /* FIXED: Back button positioning - now properly accessible */
+  #closeLeaderboardBtn {
+    position: fixed !important;
+    bottom: 80px !important; /* Much higher than before */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 10001 !important; /* Above leaderboard content */
+    background: rgba(0, 255, 208, 0.9) !important;
+    color: #000 !important;
+    border: none !important;
+    padding: 12px 30px !important;
+    font-weight: bold !important;
+    font-size: 1em !important;
+    min-height: 44px !important; /* Proper touch target size */
+    box-shadow: 0 4px 15px rgba(0, 255, 208, 0.4) !important;
+  }
+
+  /* Level select button fixes */
+  .level-actions {
+    position: fixed;
+    bottom: 60px;
+    left: 10px;
+    right: 10px;
+    padding: 8px;
+    z-index: 9000;
+    border-radius: 8px;
+  }
+  
+  .back-btn, .select-btn {
+    padding: 10px 16px;
+    font-size: 0.9em;
+    white-space: normal;
+    height: unset;
+    min-height: 38px;
+  }
+
+  /* Smaller slider area */
   .level-slider-container {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    max-width: 95vw;
+    margin: 1rem auto;
   }
-  
+
   .level-card {
-    flex: 0 0 280px;
+    flex: 0 0 55vw;
+    max-width: 80vw;
+    transform: scale(0.9);
   }
-  
+
+  .level-card.active {
+    transform: scale(0.95);
+  }
+
+  .card-image {
+    max-height: 20vh;
+  }
+
+  .card-content {
+    padding: 15px;
+  }
+
+  .card-content h3 {
+    font-size: 1em;
+  }
+
   .slider-nav {
-    width: 40px;
-    height: 40px;
-    font-size: 1.2em;
+    width: 35px;
+    height: 35px;
+    font-size: 1em;
   }
-  
+
+  .slider-pagination {
+    margin: 0px 0;
+    padding-bottom: 30%;
+  }
+
+  .pagination-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  button, .slider-nav {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  button, .primary-btn, .danger-btn, .back-btn, .select-btn {
+    white-space: normal;
+    height: auto;
+    min-height: 38px;
+  }
+
   .loading-container {
-    padding: 2rem 1.5rem;
-    margin: 1rem;
+    padding: 1.2rem 0.5rem;
+    margin: 0.5rem;
+    max-width: 96vw;
   }
-  
-  .mission-title {
-    font-size: 2rem;
+
+  #gameOver {
+    width: 94vw;
+    padding: 1.2rem 0.5rem;
+    font-size: 1.1em;
+  }
+
+  .level-description {
+    font-size: 0.8em;
+    margin: 8px 0 0 0;
+  }
+
+  .difficulty-stars {
+    margin: 8px 0;
+  }
+
+  .star {
+    font-size: 1em;
   }
 }
