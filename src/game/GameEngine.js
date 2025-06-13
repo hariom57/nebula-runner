@@ -15,8 +15,16 @@ export default class GameEngine {
   constructor(levelConfig) {
     this.uiSystem = new UISystem();
     this.levelConfig = levelConfig;
-    this.loadingManager =
-      levelConfig.loadingManager || new THREE.LoadingManager();
+    this.isFullyLoaded = false;
+    this.assetsLoaded = false;
+    this.sceneReady = false;
+    this.loadingSteps = {
+      assets: false,
+      environment: false,
+      postProcessing: false,
+      scene: false
+    };
+    this.loadingManager = levelConfig.loadingManager || new THREE.LoadingManager();
     this.currentLane = 1;
     this.asteroids = [];
     this.coins = [];
@@ -31,11 +39,10 @@ export default class GameEngine {
     this.shake = 0;
     this.playerLight = null;
     this.bgStars = [];
-    this.fireTexture = new THREE.TextureLoader(this.loadingManager).load(
-      "assets/fire_particle.png"
-    );
+    this.fireTexture = new THREE.TextureLoader(this.loadingManager).load("assets/fire_particle.png");
     this.flashMesh = null;
     this.flashAlpha = 0;
+    this.animationFrameId = null;
 
     this.asteroidModels = [];
     this.asteroidModelCount = 3;
@@ -53,17 +60,42 @@ export default class GameEngine {
     this.hudUpdateTimer = 0;
   }
 
+  checkLoadingComplete() {
+    const allStepsComplete = Object.values(this.loadingSteps).every(step => step === true);
+    
+    if (allStepsComplete && !this.isFullyLoaded) {
+      this.isFullyLoaded = true;
+      // Small delay to ensure everything is rendered
+      setTimeout(() => {
+        if (window.sciFiLoader) {
+          window.sciFiLoader.hide();
+        }
+      }, 200);
+    }
+  }
+
+  updateLoadingProgress() {
+    const completedSteps = Object.values(this.loadingSteps).filter(step => step === true).length;
+    const progress = (completedSteps / Object.keys(this.loadingSteps).length) * 100;
+    
+    if (window.sciFiLoader) {
+      window.sciFiLoader.updateProgress(progress);
+    }
+  }
+
   async init() {
     this.initEngine();
     this.createScene();
 
-    this.mobileMode =
-      window.innerWidth < 768 ||
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
+    this.mobileMode = window.innerWidth < 768 || 
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     this.createStarfield();
     this.createPostProcessing();
+    
+    // Mark post-processing as complete
+    this.loadingSteps.postProcessing = true;
+    this.updateLoadingProgress();
 
     this.optimizeForMobile();
     this.initMobileUI();
@@ -76,10 +108,42 @@ export default class GameEngine {
       this.loadingManager
     );
     this.environmentManager.switchEnvironment(this.levelConfig);
+    
+    // Mark environment as complete after a small delay
+    setTimeout(() => {
+      this.loadingSteps.environment = true;
+      this.updateLoadingProgress();
+    }, 100);
 
     await this.loadAssets();
+    
+    // Mark assets as complete
+    this.loadingSteps.assets = true;
+    this.updateLoadingProgress();
+
     this.setupEventListeners();
-    this.gameLoop();
+    
+    // Mark scene setup as complete
+    this.loadingSteps.scene = true;
+    this.updateLoadingProgress();
+    
+    // Check if loading is complete
+    this.checkLoadingComplete();
+    
+    // Only start game loop after everything is loaded
+    if (this.isFullyLoaded) {
+      this.gameLoop();
+    } else {
+      // Wait for loading to complete
+      const waitForLoading = () => {
+        if (this.isFullyLoaded) {
+          this.gameLoop();
+        } else {
+          setTimeout(waitForLoading, 50);
+        }
+      };
+      waitForLoading();
+    }
   }
 
   async loadAssets() {
@@ -292,6 +356,7 @@ export default class GameEngine {
     ssaoPass.minDistance = 0.0005;
     ssaoPass.maxDistance = 0.07;
     this.composer.addPass(ssaoPass);
+    this.ssaoPass = ssaoPass;
 
     this.bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -312,7 +377,7 @@ export default class GameEngine {
   gameLoop() {
     const delta = this.clock.getDelta();
     if (!this.gameOver) {
-      requestAnimationFrame(() => this.gameLoop());
+      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
       this.animateStarfield();
       this.animateFloatingCubes(delta);
       this.updatePlayer(delta);
@@ -320,6 +385,11 @@ export default class GameEngine {
       this.updateEntities(delta);
       this.updateScore();
       this.updateHUD(delta);
+      
+      // Update environment particles if available
+      if (this.environmentManager && this.environmentManager.updateParticles) {
+        this.environmentManager.updateParticles(delta);
+      }
     }
     if (this.flashAlpha > 0) {
       this.flashAlpha -= 0.04;
@@ -838,6 +908,11 @@ export default class GameEngine {
   }
 
   cleanup() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    
     THREE.Cache.clear();
     while (this.scene.children.length > 0) {
       this.scene.remove(this.scene.children[0]);
@@ -855,7 +930,7 @@ export default class GameEngine {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
 
     if (this.composer) {
       this.composer.setSize(width, height);
