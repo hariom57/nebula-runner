@@ -8,7 +8,7 @@ class GameAPI {
             this.baseURL = 'http://localhost:3000/api';
         } else {
             // Production - will be updated when you deploy your backend
-            this.baseURL = 'https://your-future-backend-url.com/api';
+            this.baseURL = 'https://nebula-runner-backend.onrender.com/api';
         }
         
         console.log(`🔧 API Base URL: ${this.baseURL}`);
