@@ -9,14 +9,20 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const allowedOrigins = [
+  'https://nebula-runner.vercel.app', // your Vercel frontend URL
+  'http://localhost:3000',            // local dev
+  'http://localhost:5501',            // local dev (if you use Live Server)
+  'http://127.0.0.1:5501'             // local dev (alternate)
+];
 
 // Connect to database
 connectDB();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5501', 'http://127.0.0.1:5501', 'http://localhost:3000'],
-    credentials: true
+  origin: allowedOrigins,
+  credentials: true, // if you use cookies/auth
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
