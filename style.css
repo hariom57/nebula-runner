@@ -40,14 +40,25 @@ body {
   color: #00ffd0;
 }
 
-.screen h1, .screen h2 {
+.screen h1{
+  text-align: center;
   font-size: 3em;
-  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  text-shadow: 0 0 20px rgba(0, 255, 208, 0.5);
+}
+
+.screen h2 {
+  font-size: 3em;
+  margin-top: 10.5rem;
   text-shadow: 0 0 20px rgba(0, 255, 208, 0.5);
 }
 
 #levelSelectScreen {
   display: none;
+}
+
+#levelSelectScreen h2{
+  margin-bottom: 8px;
 }
 
 #gameUI {
@@ -443,65 +454,225 @@ button:disabled {
   width: 250px;
 }
 
+/* ============================================ */
+/* FIXED LEADERBOARD OVERLAY                   */
+/* ============================================ */
+
 #leaderboardOverlay {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(8, 18, 32, 0.97);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
   display: none;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  z-index: 9998;
-  backdrop-filter: blur(10px);
+  align-items: center;
+  z-index: 9999;
+  overflow: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Desktop Layout - Side by Side */
+@media (min-width: 769px) {
+  #leaderboardOverlay {
+    flex-direction: row;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}
+
+/* Mobile Layout - Stack Vertically */
+@media (max-width: 768px) {
+  #leaderboardOverlay {
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+    align-items: center;
+  }
 }
 
 .leaderboard-panel {
-  background: rgba(0,20,40,0.85);
+  background: rgba(20, 30, 60, 0.95);
   border: 2px solid #00ffd0;
-  border-radius: 10px;
-  margin: 20px;
-  padding: 24px 32px;
-  min-width: 300px;
-  box-shadow: 0 0 30px #00ffd055;
-  display: inline-block;
-  vertical-align: top;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 250px;
+  max-height: 400px;
+}
+
+/* Desktop Panel Sizing - Side by Side */
+@media (min-width: 769px) {
+  .leaderboard-panel {
+    width: 40vw;
+    height: 450vw;
+    flex: none;
+  }
+}
+
+/* Mobile Panel Sizing */
+@media (max-width: 768px) {
+  .leaderboard-panel {
+    width: 80vw;
+    height: 0%;
+    flex: none;
+  }
 }
 
 .leaderboard-header {
-  font-size: 1.4em;
   color: #00ffd0;
-  text-shadow: 0 0 8px #00ffd0;
-  margin-bottom: 18px;
-  letter-spacing: 2px;
+  font-size: 18px;
+  font-weight: bold;
   text-align: center;
-  border-bottom: 1px solid #00ffd0;
-  padding-bottom: 8px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #00ffd0;
 }
 
 .leaderboard-list {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-
-.leaderboard-list li {
-  font-size: 1.15em;
-  color: #fff;
-  background: rgba(0,255,208,0.09);
-  border-left: 4px solid #00ffd0;
-  margin: 10px 0;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-family: 'Orbitron', monospace;
+  flex: 1;
+  overflow-y: auto;
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.leaderboard-list li.gold { border-color: #ffd700; color: #ffd700; }
-.leaderboard-list li.silver { border-color: #c0c0c0; color: #c0c0c0; }
-.leaderboard-list li.bronze { border-color: #cd7f32; color: #cd7f32; }
+.leaderboard-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+  min-height: 35px;
+}
+
+.leaderboard-entry:hover {
+  background: rgba(0, 255, 255, 0.2);
+  transform: translateX(3px);
+}
+
+.leaderboard-entry .rank {
+  font-weight: bold;
+  color: #00ffd0;
+  min-width: 35px;
+  font-size: 13px;
+}
+
+.leaderboard-entry .player-name {
+  flex: 1;
+  margin: 0 10px;
+  color: #ffffff;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.leaderboard-entry .score {
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 13px;
+  min-width: 70px;
+  text-align: right;
+}
+
+.leaderboard-entry.gold {
+  border-left-color: #FFD700;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 255, 0.1));
+}
+
+.leaderboard-entry.silver {
+  border-left-color: #C0C0C0;
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(0, 255, 255, 0.1));
+}
+
+.leaderboard-entry.bronze {
+  border-left-color: #CD7F32;
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(0, 255, 255, 0.1));
+}
+
+.no-scores {
+  text-align: center;
+  color: #888;
+  padding: 20px 10px;
+  font-style: italic;
+}
+
+/* Fixed Back Button Positioning */
+#closeLeaderboardBtn {
+  position: fixed;
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10001;
+  transition: all 0.3s ease;
+}
+
+/* Desktop Back Button */
+@media (min-width: 769px) {
+  #closeLeaderboardBtn {
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 250px;
+  }
+}
+
+/* Mobile Back Button */
+@media (max-width: 768px) {
+  #closeLeaderboardBtn {
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 250px;
+  }
+}
+
+#closeLeaderboardBtn:hover {
+  background: #ff6666;
+  transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+  #closeLeaderboardBtn:hover {
+    transform: translateX(-50%) scale(1.03);
+  }
+}
+
+.leaderboard-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leaderboard-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 255, 0.7);
+}
 
 /* ============================================ */
 /* LEVEL SELECT INTERFACE                       */
@@ -510,8 +681,8 @@ button:disabled {
 .level-slider-container {
   position: relative;
   width: 100%;
-  max-width: 900px;
-  margin: 2rem auto;
+  max-width: 80vw;
+  max-height: 90vw;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -525,7 +696,7 @@ button:disabled {
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   width: 100%;
-  padding: 20px 0;
+  padding: 20px 100px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: #00ffd0 #0a1420;
@@ -651,7 +822,7 @@ button:disabled {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin: 20px 0;
+  padding-bottom: 45vh;
 }
 
 .pagination-dot {
@@ -675,10 +846,13 @@ button:disabled {
 }
 
 .level-actions {
+  position: fixed;
+  bottom: 60px;
+  left: 10px;
+  right: 10px;
   display: flex;
   gap: 20px;
   justify-content: center;
-  margin-top: 30px;
 }
 
 .select-btn {
@@ -894,7 +1068,7 @@ button:disabled {
 /* ============================================ */
 
 @media only screen and (max-width: 768px) {
-  .screen h1, .screen h2 {
+   .screen h2 {
     text-align: center !important;
     width: 100% !important;
     margin-left: auto !important;
@@ -905,7 +1079,8 @@ button:disabled {
 
   #levelSelectScreen h2 {
     font-size: 1.8em !important;
-    margin-bottom: 0.5rem !important;
+    margin-top:0;
+    margin-bottom: 3rem !important;
   }
 
   .loading-container, #gameOver {
@@ -913,54 +1088,49 @@ button:disabled {
     box-sizing: border-box;
   }
 
-  /* FIXED: Significantly reduced HUD panel sizes and positioning */
   .hud-panel {
-    font-size: 10px !important; /* Reduced from 12px */
-    padding: 4px 6px !important; /* Much smaller padding */
-    max-width: 35vw !important; /* Smaller max width */
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    max-width: 35vw !important;
     box-sizing: border-box;
-    opacity: 0.85 !important; /* Slightly transparent to reduce visual clutter */
-    backdrop-filter: blur(3px) !important; /* Lighter blur effect */
+    opacity: 0.85 !important;
+    backdrop-filter: blur(3px) !important;
   }
 
   .hud-panel.top-right {
-    top: 5px !important; /* Moved closer to edge */
+    top: 5px !important;
     right: 5px !important;
-    width: 32vw !important; /* Fixed smaller width */
+    width: 32vw !important;
   }
 
   .hud-panel.top-left {
-    top: 60px !important; /* Moved down to avoid score overlap */
+    top: 60px !important;
     left: 5px !important;
-    width: 30vw !important; /* Fixed smaller width */
+    width: 30vw !important;
   }
 
-  /* FIXED: Much smaller center HUD */
   .center-hud {
-    transform: translate(-50%, -50%) scale(0.5) !important; /* Reduced from 0.7 */
-    opacity: 0.8 !important; /* Make it less prominent */
+    transform: translate(-50%, -50%) scale(0.5) !important;
+    opacity: 0.8 !important;
   }
 
-  /* FIXED: Scoring positioned to not overlap with HUD */
   #scoring {
     top: 5px !important;
     left: 5px !important;
-    font-size: 16px !important; /* Reduced from 20px */
-    padding: 8px 10px !important; /* Smaller padding */
-    max-width: 40vw !important; /* Limit width */
+    font-size: 16px !important;
+    padding: 8px 10px !important;
+    max-width: 40vw !important;
     box-sizing: border-box;
-    backdrop-filter: blur(2px) !important; /* Lighter effect */
+    backdrop-filter: blur(2px) !important;
   }
 
-  /* FIXED: Hide bottom HUD panels entirely on mobile */
   .hud-panel.bottom-left,
   .hud-panel.bottom-right {
-    display: none !important; /* Complete removal for mobile */
+    display: none !important;
   }
 
-  /* FIXED: Simplified radar and mission info */
   .radar-container {
-    width: 60px !important; /* Much smaller radar */
+    width: 60px !important;
     height: 60px !important;
   }
 
@@ -970,11 +1140,11 @@ button:disabled {
   }
 
   .mission-info {
-    margin-bottom: 6px !important; /* Reduced spacing */
+    margin-bottom: 6px !important;
   }
 
   .mission-item {
-    font-size: 8px !important; /* Smaller text */
+    font-size: 8px !important;
     margin-bottom: 2px !important;
   }
 
@@ -996,50 +1166,18 @@ button:disabled {
   }
 
   .bar {
-    height: 4px !important; /* Thinner bars */
-  }
-
-  /* Leaderboard layout remains the same */
-  #leaderboardOverlay {
-    padding: 10px 5px 80px 5px;
-    box-sizing: border-box;
-    overflow-y: auto;
-  }
-
-  .leaderboard-panel {
-    max-width: 85vw;
-    margin: 10px auto;
-    padding: 15px 20px;
-    min-width: unset;
-    display: block;
+    height: 4px !important;
   }
 
   .leaderboard-header {
-    font-size: 1.1em;
-    margin-bottom: 12px;
+    font-size: 16px;
+    margin-bottom: 10px;
   }
-
-  .leaderboard-list li {
-    font-size: 0.95em;
-    padding: 8px 12px;
-    margin: 6px 0;
-  }
-
-  #closeLeaderboardBtn {
-    position: fixed !important;
-    bottom: 80px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 10001 !important;
-    background: rgba(0, 255, 208, 0.9) !important;
-    color: #000 !important;
-    border: none !important;
-    padding: 12px 30px !important;
-    border-radius: 25px !important;
-    font-weight: bold !important;
-    font-size: 1em !important;
-    min-height: 44px !important;
-    box-shadow: 0 4px 15px rgba(0, 255, 208, 0.4) !important;
+  
+  .leaderboard-entry .rank,
+  .leaderboard-entry .player-name,
+  .leaderboard-entry .score {
+    font-size: 12px;
   }
 
   .level-actions {
@@ -1048,7 +1186,6 @@ button:disabled {
     left: 10px;
     right: 10px;
     padding: 8px;
-    background: rgba(0, 0, 0, 0.8);
     z-index: 9000;
     border-radius: 8px;
   }
@@ -1062,10 +1199,14 @@ button:disabled {
   }
 
   .level-slider-container {
-    flex-direction: column;
-    gap: 8px;
-    max-width: 95vw;
-    margin: 1rem auto;
+    position: relative;
+    width: 100%;
+    max-width: 80vw;
+    max-height: 90vw;
+    display: flex;
+    align-items: center;
+    align-items: center;
+    gap: 20px;
   }
 
   .level-card {
@@ -1098,7 +1239,7 @@ button:disabled {
 
   .slider-pagination {
     margin: 0px 0;
-    padding-bottom: 30%;
+    padding-bottom: 20vh;
   }
 
   .pagination-dot {
