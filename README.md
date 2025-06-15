@@ -2,7 +2,7 @@
 
 A high-performance 3D space runner game built with Three.js, featuring real-time leaderboards and cross-platform optimization.
 
-![Nebula Runner Screenshot](assets/screenshot.png)
+![Nebula Runner Screenshot](assets/Screenshot.png)
 
 ## 🌟 Live Demo
 
